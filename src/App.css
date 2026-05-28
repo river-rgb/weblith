@@ -9,21 +9,42 @@ body {
   height: 42px;
   display: flex;
   align-items: center;
-  gap: 10px;
-  padding: 0 16px;
+  gap: 8px;
+  padding: 0 12px;
   background: #111;
   border-bottom: 1px solid #333;
+  box-sizing: border-box;
 }
 
 .save-bar button {
-  padding: 7px 12px;
+  padding: 7px 10px;
   cursor: pointer;
+}
+
+.subdomain-input {
+  height: 29px;
+  width: 150px;
+  background: #222;
+  color: white;
+  border: 1px solid #555;
+  padding: 0 8px;
+}
+
+.domain-preview {
+  color: white;
+}
+
+.active-site-name {
+  color: white;
+  margin-left: auto;
+  font-size: 14px;
 }
 
 .builder-layout {
   display: grid;
-  grid-template-columns: 260px 1fr 320px;
+  grid-template-columns: 260px minmax(0, 1fr) 320px;
   height: calc(100vh - 42px);
+  overflow: hidden;
 }
 
 .left-panel {
@@ -35,6 +56,7 @@ body {
 #gjs {
   min-width: 0;
   height: 100%;
+  overflow: hidden;
 }
 
 .right-panel {
@@ -62,6 +84,7 @@ body {
   background: #111;
   color: white;
   padding: 20px;
+  box-sizing: border-box;
 }
 
 .code-modal-header {
@@ -81,28 +104,27 @@ body {
   cursor: pointer;
 }
 
-.code-editor-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
-  gap: 15px;
-  height: calc(100vh - 95px);
-}
-
 .code-editor-panel {
   display: flex;
   flex-direction: column;
   background: #1f1f1f;
   border: 1px solid #333;
   padding: 10px;
+  box-sizing: border-box;
 }
 
 .code-editor-panel h3 {
   margin: 0 0 10px 0;
 }
 
-.code-editor-panel textarea {
+.full-code-panel {
+  height: calc(100vh - 95px);
+}
+
+.full-code-panel textarea {
   flex: 1;
   width: 100%;
+  height: 100%;
   resize: none;
   border: 1px solid #444;
   background: #050505;
@@ -114,6 +136,8 @@ body {
   outline: none;
 }
 
+/* GrapesJS layout fixes */
+
 .gjs-editor-cont {
   height: 100% !important;
 }
@@ -122,7 +146,19 @@ body {
   width: 100% !important;
   height: 100% !important;
   top: 0 !important;
+  overflow: auto !important;
 }
+
+.gjs-frame-wrapper {
+  height: 100% !important;
+  overflow: auto !important;
+}
+
+.gjs-frame {
+  min-height: 1600px !important;
+}
+
+/* GrapesJS theme */
 
 .gjs-one-bg {
   background-color: #1f1f1f;
@@ -140,6 +176,9 @@ body {
 .gjs-four-color-h:hover {
   color: #ffb347;
 }
+
+/* Login */
+
 .login-page {
   min-height: 100vh;
   background: #111;
@@ -180,11 +219,8 @@ body {
 .login-error {
   color: #ff6b6b;
 }
-.active-site-name {
-  color: white;
-  margin-left: auto;
-  font-size: 14px;
-}
+
+/* Dashboard */
 
 .dashboard-page {
   min-height: 100vh;
@@ -257,22 +293,4 @@ body {
 .website-card-actions button {
   padding: 8px 12px;
   cursor: pointer;
-}
-.full-code-panel {
-  height: calc(100vh - 95px);
-}
-
-.full-code-panel textarea {
-  flex: 1;
-  width: 100%;
-  height: 100%;
-  resize: none;
-  border: 1px solid #444;
-  background: #050505;
-  color: #00ff88;
-  font-family: Consolas, Monaco, monospace;
-  font-size: 14px;
-  padding: 12px;
-  box-sizing: border-box;
-  outline: none;
 }

@@ -57,6 +57,15 @@ export default function SiteBuilder({ website, onBack }) {
       },
     });
 
+    editor.on("load", () => {
+      const frameBody = editor.Canvas.getBody();
+
+      if (frameBody) {
+        frameBody.style.minHeight = "1600px";
+        frameBody.style.overflowY = "auto";
+      }
+    });
+
     if (website?.project_data) {
       editor.loadProjectData(website.project_data);
     } else {
@@ -75,16 +84,6 @@ export default function SiteBuilder({ website, onBack }) {
   const setDevice = (device) => {
     const editor = editorRef.current;
     editor.setDevice(device);
-  };
-
-  const getFinalHtml = () => {
-    const editor = editorRef.current;
-
-    return `
-${editor.getHtml()}
-
-${customCode}
-`;
   };
 
   const openCodeEditor = () => {
@@ -222,7 +221,7 @@ ${customCode}
     setSubdomain(cleanSubdomain);
     setPublished(true);
 
-    alert(`Website published!\n\n${cleanSubdomain}.weblith.dev.com`);
+    alert(`Website published!\n\n${cleanSubdomain}.weblith.dev`);
   };
 
   return (
