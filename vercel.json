@@ -10,7 +10,7 @@
       "has": [
         {
           "type": "host",
-          "value": "offers.weblith.dev"
+          "value": "^(?!weblith\\.dev$)(?!www\\.weblith\\.dev$)(.+)\\.weblith\\.dev$"
         }
       ],
       "destination": "/api/render-site"
@@ -20,7 +20,7 @@
       "has": [
         {
           "type": "host",
-          "value": "offers.weblith.dev"
+          "value": "^(?!weblith\\.dev$)(?!www\\.weblith\\.dev$)(.+)\\.weblith\\.dev$"
         }
       ],
       "destination": "/api/render-site"
