@@ -6,11 +6,21 @@
       "destination": "/api/:path*"
     },
     {
+      "source": "/",
+      "has": [
+        {
+          "type": "host",
+          "value": "offers.weblith.dev"
+        }
+      ],
+      "destination": "/api/render-site"
+    },
+    {
       "source": "/:path*",
       "has": [
         {
           "type": "host",
-          "value": "(.+)\\.weblith\\.dev"
+          "value": "offers.weblith.dev"
         }
       ],
       "destination": "/api/render-site"
