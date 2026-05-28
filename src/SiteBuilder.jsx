@@ -222,7 +222,7 @@ ${customCode}
     setSubdomain(cleanSubdomain);
     setPublished(true);
 
-    alert(`Website published!\n\n${cleanSubdomain}.yourdomain.com`);
+    alert(`Website published!\n\n${cleanSubdomain}.weblith.dev.com`);
   };
 
   return (
@@ -253,7 +253,7 @@ ${customCode}
           onChange={(e) => setSubdomain(e.target.value)}
         />
 
-        <span className="domain-preview">.yourdomain.com</span>
+        <span className="domain-preview">.weblith.dev</span>
 
         <span className="active-site-name">{website?.name}</span>
       </div>
