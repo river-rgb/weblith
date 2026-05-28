@@ -3,6 +3,7 @@ import grapesjs from "grapesjs";
 import presetWebpage from "grapesjs-preset-webpage";
 import { supabase } from "./supabaseClient";
 import "grapesjs/dist/css/grapes.min.css";
+import { renderSiteHtml } from "./renderSiteHtml";
 
 export default function SiteBuilder({ website, onBack }) {
   const editorRef = useRef(null);
@@ -20,41 +21,20 @@ export default function SiteBuilder({ website, onBack }) {
       height: "100%",
       width: "auto",
       storageManager: false,
-
       plugins: [presetWebpage],
-
       pluginsOpts: {
         [presetWebpage]: {},
       },
-
       deviceManager: {
         devices: [
-          {
-            name: "Desktop",
-            width: "",
-          },
-          {
-            name: "Mobile",
-            width: "390px",
-          },
+          { name: "Desktop", width: "" },
+          { name: "Mobile", width: "390px" },
         ],
       },
-
-      blockManager: {
-        appendTo: "#blocks",
-      },
-
-      layerManager: {
-        appendTo: "#layers",
-      },
-
-      styleManager: {
-        appendTo: "#styles",
-      },
-
-      traitManager: {
-        appendTo: "#traits",
-      },
+      blockManager: { appendTo: "#blocks" },
+      layerManager: { appendTo: "#layers" },
+      styleManager: { appendTo: "#styles" },
+      traitManager: { appendTo: "#traits" },
     });
 
     editor.on("load", () => {
@@ -69,13 +49,8 @@ export default function SiteBuilder({ website, onBack }) {
     if (website?.project_data) {
       editor.loadProjectData(website.project_data);
     } else {
-      if (website?.html) {
-        editor.setComponents(website.html);
-      }
-
-      if (website?.css) {
-        editor.setStyle(website.css);
-      }
+      if (website?.html) editor.setComponents(website.html);
+      if (website?.css) editor.setStyle(website.css);
     }
 
     editorRef.current = editor;
@@ -83,6 +58,7 @@ export default function SiteBuilder({ website, onBack }) {
 
   const setDevice = (device) => {
     const editor = editorRef.current;
+    if (!editor) return;
     editor.setDevice(device);
   };
 
@@ -95,8 +71,26 @@ export default function SiteBuilder({ website, onBack }) {
     setShowCodeEditor(false);
   };
 
+  const buildRenderedHtml = ({ cleanSubdomain }) => {
+    const editor = editorRef.current;
+
+    return renderSiteHtml({
+      title: website?.title || website?.name || "Weblith Site",
+      description: website?.description || "",
+      faviconUrl: website?.favicon_url || "",
+      socialImageUrl: website?.social_image_url || "",
+      themeColor: website?.theme_color || "#ffffff",
+      html: editor.getHtml(),
+      css: editor.getCss(),
+      customCode,
+      subdomain: cleanSubdomain,
+    });
+  };
+
   const handlePreview = () => {
     const editor = editorRef.current;
+    if (!editor) return;
+
     const previewWindow = window.open("", "_blank");
 
     previewWindow.document.open();
@@ -122,6 +116,8 @@ export default function SiteBuilder({ website, onBack }) {
 
   const handleMobilePreview = () => {
     const editor = editorRef.current;
+    if (!editor) return;
+
     const previewWindow = window.open("", "_blank", "width=390,height=844");
 
     previewWindow.document.open();
@@ -147,6 +143,12 @@ export default function SiteBuilder({ website, onBack }) {
 
   const handleSave = async () => {
     const editor = editorRef.current;
+    if (!editor) return;
+
+    const cleanSubdomain =
+      subdomain?.toLowerCase().replace(/[^a-z0-9-]/g, "") || "";
+
+    const renderedHtml = buildRenderedHtml({ cleanSubdomain });
 
     const {
       data: { user },
@@ -164,8 +166,10 @@ export default function SiteBuilder({ website, onBack }) {
         css: editor.getCss(),
         js: customCode,
         project_data: editor.getProjectData(),
-        subdomain,
+        subdomain: cleanSubdomain,
         published,
+        rendered_html: renderedHtml,
+        updated_at: new Date().toISOString(),
       })
       .eq("id", website.id)
       .eq("user_id", user.id);
@@ -176,10 +180,15 @@ export default function SiteBuilder({ website, onBack }) {
       return;
     }
 
+    setSubdomain(cleanSubdomain);
+
     alert("Website saved!");
   };
 
   const handlePublish = async () => {
+    const editor = editorRef.current;
+    if (!editor) return;
+
     if (!subdomain) {
       alert("Please enter a subdomain first");
       return;
@@ -199,7 +208,7 @@ export default function SiteBuilder({ website, onBack }) {
       return;
     }
 
-    const editor = editorRef.current;
+    const renderedHtml = buildRenderedHtml({ cleanSubdomain });
 
     const { error } = await supabase
       .from("websites")
@@ -210,6 +219,9 @@ export default function SiteBuilder({ website, onBack }) {
         project_data: editor.getProjectData(),
         subdomain: cleanSubdomain,
         published: true,
+        rendered_html: renderedHtml,
+        published_at: new Date().toISOString(),
+        updated_at: new Date().toISOString(),
       })
       .eq("id", website.id);
 
@@ -228,17 +240,11 @@ export default function SiteBuilder({ website, onBack }) {
     <>
       <div className="save-bar">
         <button onClick={onBack}>Back</button>
-
         <button onClick={() => setDevice("Desktop")}>Desktop</button>
-
         <button onClick={() => setDevice("Mobile")}>Mobile</button>
-
         <button onClick={handleMobilePreview}>Preview Mobile</button>
-
         <button onClick={handleSave}>Save Website</button>
-
         <button onClick={openCodeEditor}>Edit Code</button>
-
         <button onClick={handlePreview}>Preview</button>
 
         <button onClick={handlePublish}>
@@ -253,7 +259,6 @@ export default function SiteBuilder({ website, onBack }) {
         />
 
         <span className="domain-preview">.weblith.dev</span>
-
         <span className="active-site-name">{website?.name}</span>
       </div>
 
