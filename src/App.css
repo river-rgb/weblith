@@ -154,9 +154,6 @@ body {
   overflow: auto !important;
 }
 
-.gjs-frame {
-  min-height: 1600px !important;
-}
 
 /* GrapesJS theme */
 

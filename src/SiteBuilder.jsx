@@ -13,6 +13,12 @@ export default function SiteBuilder({ website, onBack }) {
   const [subdomain, setSubdomain] = useState(website?.subdomain || "");
   const [published, setPublished] = useState(website?.published || false);
 
+  const [publishedUrl, setPublishedUrl] = useState(
+    website?.subdomain
+      ? `https://${website.subdomain}.weblith.dev`
+      : ""
+  );
+
   useEffect(() => {
     if (editorRef.current) return;
 
@@ -20,37 +26,78 @@ export default function SiteBuilder({ website, onBack }) {
       container: "#gjs",
       height: "100%",
       width: "auto",
+
       storageManager: false,
+
       plugins: [presetWebpage],
+
       pluginsOpts: {
         [presetWebpage]: {},
       },
+
       deviceManager: {
         devices: [
-          { name: "Desktop", width: "" },
-          { name: "Mobile", width: "390px" },
+          {
+            name: "Desktop",
+            width: "",
+          },
+          {
+            name: "Mobile",
+            width: "390px",
+          },
         ],
       },
-      blockManager: { appendTo: "#blocks" },
-      layerManager: { appendTo: "#layers" },
-      styleManager: { appendTo: "#styles" },
-      traitManager: { appendTo: "#traits" },
+
+      blockManager: {
+        appendTo: "#blocks",
+      },
+
+      layerManager: {
+        appendTo: "#layers",
+      },
+
+      styleManager: {
+        appendTo: "#styles",
+      },
+
+      traitManager: {
+        appendTo: "#traits",
+      },
     });
 
     editor.on("load", () => {
       const frameBody = editor.Canvas.getBody();
 
       if (frameBody) {
-        frameBody.style.minHeight = "1600px";
+frameBody.style.minHeight = "100vh";
+frameBody.style.paddingTop = "20px";
         frameBody.style.overflowY = "auto";
       }
     });
+editor.on("component:add", () => {
+  setTimeout(() => {
+    const frameWindow = editor.Canvas.getWindow();
 
+    if (frameWindow) {
+      frameWindow.scrollTo({
+        top: 0,
+        behavior: "smooth",
+      });
+    }
+
+    editor.refresh();
+  }, 100);
+});
     if (website?.project_data) {
       editor.loadProjectData(website.project_data);
     } else {
-      if (website?.html) editor.setComponents(website.html);
-      if (website?.css) editor.setStyle(website.css);
+      if (website?.html) {
+        editor.setComponents(website.html);
+      }
+
+      if (website?.css) {
+        editor.setStyle(website.css);
+      }
     }
 
     editorRef.current = editor;
@@ -58,8 +105,36 @@ export default function SiteBuilder({ website, onBack }) {
 
   const setDevice = (device) => {
     const editor = editorRef.current;
+
     if (!editor) return;
+
     editor.setDevice(device);
+  };
+
+  const addTextSection = () => {
+    const editor = editorRef.current;
+
+    if (!editor) return;
+
+    const currentHtml = editor.getHtml();
+
+    editor.setComponents(`
+      ${currentHtml}
+
+      <section style="padding:40px; background:#fff4cc; color:#111; border:2px dashed #ff9900; min-height:120px;">
+        <h1 data-gjs-type="text" style="margin:0 0 12px;">
+          Double-click to edit heading
+        </h1>
+
+        <p data-gjs-type="text" style="font-size:18px;">
+          Double-click to edit paragraph text.
+        </p>
+      </section>
+    `);
+
+    setTimeout(() => {
+      editor.refresh();
+    }, 100);
   };
 
   const openCodeEditor = () => {
@@ -69,6 +144,10 @@ export default function SiteBuilder({ website, onBack }) {
 
   const applyCodeChanges = () => {
     setShowCodeEditor(false);
+  };
+
+  const getCleanSubdomain = () => {
+    return subdomain?.toLowerCase().replace(/[^a-z0-9-]/g, "") || "";
   };
 
   const buildRenderedHtml = ({ cleanSubdomain }) => {
@@ -89,21 +168,29 @@ export default function SiteBuilder({ website, onBack }) {
 
   const handlePreview = () => {
     const editor = editorRef.current;
+
     if (!editor) return;
 
     const previewWindow = window.open("", "_blank");
 
     previewWindow.document.open();
+
     previewWindow.document.write(`
 <!DOCTYPE html>
 <html>
 <head>
   <title>Preview</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  />
+
   <style>
     ${editor.getCss()}
   </style>
 </head>
+
 <body>
   ${editor.getHtml()}
 
@@ -111,26 +198,39 @@ export default function SiteBuilder({ website, onBack }) {
 </body>
 </html>
 `);
+
     previewWindow.document.close();
   };
 
   const handleMobilePreview = () => {
     const editor = editorRef.current;
+
     if (!editor) return;
 
-    const previewWindow = window.open("", "_blank", "width=390,height=844");
+    const previewWindow = window.open(
+      "",
+      "_blank",
+      "width=390,height=844"
+    );
 
     previewWindow.document.open();
+
     previewWindow.document.write(`
 <!DOCTYPE html>
 <html>
 <head>
   <title>Mobile Preview</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  />
+
   <style>
     ${editor.getCss()}
   </style>
 </head>
+
 <body>
   ${editor.getHtml()}
 
@@ -138,17 +238,20 @@ export default function SiteBuilder({ website, onBack }) {
 </body>
 </html>
 `);
+
     previewWindow.document.close();
   };
 
   const handleSave = async () => {
     const editor = editorRef.current;
+
     if (!editor) return;
 
-    const cleanSubdomain =
-      subdomain?.toLowerCase().replace(/[^a-z0-9-]/g, "") || "";
+    const cleanSubdomain = getCleanSubdomain();
 
-    const renderedHtml = buildRenderedHtml({ cleanSubdomain });
+    const renderedHtml = buildRenderedHtml({
+      cleanSubdomain,
+    });
 
     const {
       data: { user },
@@ -182,11 +285,18 @@ export default function SiteBuilder({ website, onBack }) {
 
     setSubdomain(cleanSubdomain);
 
+    if (cleanSubdomain) {
+      setPublishedUrl(
+        `https://${cleanSubdomain}.weblith.dev`
+      );
+    }
+
     alert("Website saved!");
   };
 
   const handlePublish = async () => {
     const editor = editorRef.current;
+
     if (!editor) return;
 
     if (!subdomain) {
@@ -194,7 +304,7 @@ export default function SiteBuilder({ website, onBack }) {
       return;
     }
 
-    const cleanSubdomain = subdomain.toLowerCase().replace(/[^a-z0-9-]/g, "");
+    const cleanSubdomain = getCleanSubdomain();
 
     const { data: existingSite } = await supabase
       .from("websites")
@@ -208,7 +318,9 @@ export default function SiteBuilder({ website, onBack }) {
       return;
     }
 
-    const renderedHtml = buildRenderedHtml({ cleanSubdomain });
+    const renderedHtml = buildRenderedHtml({
+      cleanSubdomain,
+    });
 
     const { error } = await supabase
       .from("websites")
@@ -230,36 +342,96 @@ export default function SiteBuilder({ website, onBack }) {
       return;
     }
 
+    const finalUrl = `https://${cleanSubdomain}.weblith.dev`;
+
     setSubdomain(cleanSubdomain);
     setPublished(true);
+    setPublishedUrl(finalUrl);
 
-    alert(`Website published!\n\n${cleanSubdomain}.weblith.dev`);
+    alert(`Website published!\n\n${finalUrl}`);
+  };
+
+  const copyPublishedUrl = async () => {
+    if (!publishedUrl) {
+      alert("Publish the site first.");
+      return;
+    }
+
+    try {
+      await navigator.clipboard.writeText(
+        publishedUrl
+      );
+
+      alert("Published URL copied!");
+    } catch (error) {
+      console.error("Copy failed:", error);
+      alert(publishedUrl);
+    }
   };
 
   return (
     <>
       <div className="save-bar">
-        <button onClick={onBack}>Back</button>
-        <button onClick={() => setDevice("Desktop")}>Desktop</button>
-        <button onClick={() => setDevice("Mobile")}>Mobile</button>
-        <button onClick={handleMobilePreview}>Preview Mobile</button>
-        <button onClick={handleSave}>Save Website</button>
-        <button onClick={openCodeEditor}>Edit Code</button>
-        <button onClick={handlePreview}>Preview</button>
+        <button onClick={onBack}>
+          Back
+        </button>
+
+        <button onClick={() => setDevice("Desktop")}>
+          Desktop
+        </button>
+
+        <button onClick={() => setDevice("Mobile")}>
+          Mobile
+        </button>
+
+        <button onClick={addTextSection}>
+          Add Text
+        </button>
+
+        <button onClick={handleMobilePreview}>
+          Preview Mobile
+        </button>
+
+        <button onClick={handleSave}>
+          Save Website
+        </button>
+
+        <button onClick={openCodeEditor}>
+          Edit Code
+        </button>
+
+        <button onClick={handlePreview}>
+          Preview
+        </button>
 
         <button onClick={handlePublish}>
-          {published ? "Update Published Site" : "Publish Website"}
+          {published
+            ? "Update Published Site"
+            : "Publish Website"}
         </button>
+
+        {publishedUrl && (
+          <button onClick={copyPublishedUrl}>
+            Copy URL
+          </button>
+        )}
 
         <input
           className="subdomain-input"
           placeholder="subdomain"
           value={subdomain}
-          onChange={(e) => setSubdomain(e.target.value)}
+          onChange={(e) =>
+            setSubdomain(e.target.value)
+          }
         />
 
-        <span className="domain-preview">.weblith.dev</span>
-        <span className="active-site-name">{website?.name}</span>
+        <span className="domain-preview">
+          .weblith.dev
+        </span>
+
+        <span className="active-site-name">
+          {website?.name}
+        </span>
       </div>
 
       <div className="builder-layout">
@@ -272,16 +444,19 @@ export default function SiteBuilder({ website, onBack }) {
         <div className="right-panel">
           <div className="panel-section">
             <h3>Layers</h3>
+
             <div id="layers"></div>
           </div>
 
           <div className="panel-section">
             <h3>Styles</h3>
+
             <div id="styles"></div>
           </div>
 
           <div className="panel-section">
             <h3>Traits</h3>
+
             <div id="traits"></div>
           </div>
         </div>
@@ -290,20 +465,36 @@ export default function SiteBuilder({ website, onBack }) {
       {showCodeEditor && (
         <div className="code-modal">
           <div className="code-modal-header">
-            <h2>Custom Code Injection</h2>
+            <h2>
+              Custom Code Injection
+            </h2>
 
             <div>
-              <button onClick={applyCodeChanges}>Apply Changes</button>
-              <button onClick={() => setShowCodeEditor(false)}>Close</button>
+              <button onClick={applyCodeChanges}>
+                Apply Changes
+              </button>
+
+              <button
+                onClick={() =>
+                  setShowCodeEditor(false)
+                }
+              >
+                Close
+              </button>
             </div>
           </div>
 
           <div className="code-editor-panel full-code-panel">
-            <h3>Paste Popup / Tracking / Embed Code Here</h3>
+            <h3>
+              Paste Popup / Tracking /
+              Embed Code Here
+            </h3>
 
             <textarea
               value={customCode}
-              onChange={(e) => setCustomCode(e.target.value)}
+              onChange={(e) =>
+                setCustomCode(e.target.value)
+              }
               placeholder="Paste full custom code here. You can include <style>, HTML, and <script>."
             />
           </div>
