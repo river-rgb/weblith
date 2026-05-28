@@ -14,6 +14,6 @@ export default function middleware(request) {
 
   if (isWeblithSubdomain && !isAsset) {
     url.pathname = "/api/render-site";
-    return Response.redirect(url, 307);
+return fetch(url, request);
   }
 }
