@@ -1,31 +1,18 @@
 {
-  "version": 2,
-  "routes": [
+  "rewrites": [
     {
-      "src": "/api/(.*)",
-      "dest": "/api/$1"
+      "source": "/api/:path*",
+      "destination": "/api/:path*"
     },
     {
-      "src": "/assets/(.*)",
-      "dest": "/assets/$1"
-    },
-    {
-      "src": "/favicon.svg",
-      "dest": "/favicon.svg"
-    },
-    {
-      "src": "/(.*)",
+      "source": "/:path*",
       "has": [
         {
           "type": "host",
-          "value": "(.+)\\.weblith\\.dev"
+          "value": "(?<subdomain>[^.]+)\\.weblith\\.dev"
         }
       ],
-      "dest": "/api/render-site"
-    },
-    {
-      "src": "/(.*)",
-      "dest": "/index.html"
+      "destination": "/api/render-site"
     }
   ]
 }

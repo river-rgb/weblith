@@ -12,12 +12,13 @@ export default async function handler(req, res) {
     const subdomain = host.split(".")[0];
 
     if (
-      !subdomain ||
-      subdomain === "www" ||
-      subdomain === "weblith"
-    ) {
-      return res.status(404).send("Not a public site");
-    }
+  host === "weblith.dev" ||
+  host === "www.weblith.dev" ||
+  subdomain === "weblith" ||
+  subdomain === "www"
+) {
+  return res.redirect(302, "https://weblith.dev/");
+}
 
     const { data: site, error } = await supabase
       .from("websites")
