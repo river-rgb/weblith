@@ -65,28 +65,25 @@ export default function SiteBuilder({ website, onBack }) {
       },
     });
 
-    editor.on("load", () => {
-      const frameBody = editor.Canvas.getBody();
+editor.on("load", () => {
+  const frameBody = editor.Canvas.getBody();
+  const frameDoc = editor.Canvas.getDocument();
 
-      if (frameBody) {
-frameBody.style.minHeight = "100vh";
-frameBody.style.paddingTop = "20px";
-        frameBody.style.overflowY = "auto";
-      }
-    });
-editor.on("component:add", () => {
-  setTimeout(() => {
-    const frameWindow = editor.Canvas.getWindow();
+  if (frameBody) {
+    frameBody.style.minHeight = "auto";
+    frameBody.style.height = "auto";
+    frameBody.style.paddingTop = "0px";
+    frameBody.style.marginTop = "0px";
+    frameBody.style.overflowY = "auto";
+  }
 
-    if (frameWindow) {
-      frameWindow.scrollTo({
-        top: 0,
-        behavior: "smooth",
-      });
-    }
+  if (frameDoc && frameDoc.documentElement) {
+    frameDoc.documentElement.style.height = "auto";
+    frameDoc.documentElement.style.margin = "0";
+    frameDoc.documentElement.style.padding = "0";
+  }
 
-    editor.refresh();
-  }, 100);
+  editor.refresh();
 });
     if (website?.project_data) {
       editor.loadProjectData(website.project_data);
