@@ -73,7 +73,7 @@ editor.on("load", () => {
   if (frameBody) {
     frameBody.style.minHeight = "auto";
     frameBody.style.height = "auto";
-    frameBody.style.paddingTop = "24px";
+    frameBody.style.paddingTop = "0px";
 	frameBody.style.boxSizing = "border-box";
     frameBody.style.marginTop = "0px";
     frameBody.style.overflowY = "auto";
