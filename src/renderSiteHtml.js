@@ -59,7 +59,7 @@ export function renderSiteHtml({
     <script>
       window.WEBLITH_FRONTEND_FAKE_BACKEND_MODE = false;
       window.WEBLITH_APP_VARIANT = "runtime";
-      window.WEBLITH_BUILD_VERSION = "1.0.0";
+      window.WEBLITH_BUILD_VERSION = "1.0.1";
       window.weblithHtmlLoadedAt = performance.now();
 
       window.WEBLITH_SITE_PAYLOAD = ${escapeScriptJson(sitePayload)};
