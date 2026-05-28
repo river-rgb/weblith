@@ -1,29 +1,31 @@
 {
-  "$schema": "https://openapi.vercel.sh/vercel.json",
-  "rewrites": [
+  "version": 2,
+  "routes": [
     {
-      "source": "/api/:path*",
-      "destination": "/api/:path*"
+      "src": "/api/(.*)",
+      "dest": "/api/$1"
     },
     {
-      "source": "/",
+      "src": "/assets/(.*)",
+      "dest": "/assets/$1"
+    },
+    {
+      "src": "/favicon.svg",
+      "dest": "/favicon.svg"
+    },
+    {
+      "src": "/(.*)",
       "has": [
         {
           "type": "host",
-          "value": "^(?!weblith\\.dev$)(?!www\\.weblith\\.dev$)(.+)\\.weblith\\.dev$"
+          "value": "(.+)\\.weblith\\.dev"
         }
       ],
-      "destination": "/api/render-site"
+      "dest": "/api/render-site"
     },
     {
-      "source": "/:path*",
-      "has": [
-        {
-          "type": "host",
-          "value": "^(?!weblith\\.dev$)(?!www\\.weblith\\.dev$)(.+)\\.weblith\\.dev$"
-        }
-      ],
-      "destination": "/api/render-site"
+      "src": "/(.*)",
+      "dest": "/index.html"
     }
   ]
 }
