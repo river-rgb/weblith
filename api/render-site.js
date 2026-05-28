@@ -32,7 +32,11 @@ export default async function handler(req, res) {
     }
 
     res.setHeader("Content-Type", "text/html");
-
+	
+res.setHeader(
+  "Cache-Control",
+  "public, s-maxage=86400, stale-while-revalidate=300"
+);
     return res.status(200).send(site.rendered_html);
   } catch (err) {
     console.error(err);
