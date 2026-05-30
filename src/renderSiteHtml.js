@@ -6,37 +6,20 @@ function escapeHtml(value = "") {
     .replaceAll(">", "&gt;");
 }
 
-function escapeScriptJson(value) {
-  return JSON.stringify(value).replaceAll("</script", "<\\/script");
-}
-
 export function renderSiteHtml({
   title = "Weblith Site",
   description = "",
   faviconUrl = "",
   socialImageUrl = "",
   themeColor = "#ffffff",
-  html = "",
-  css = "",
   headCode = "",
   bodyStartCode = "",
   bodyEndCode = "",
-  customCode = "",
   subdomain = "",
 }) {
   const safeTitle = escapeHtml(title || "Weblith Site");
   const safeDescription = escapeHtml(description || "");
   const safeThemeColor = escapeHtml(themeColor || "#ffffff");
-
-  const sitePayload = {
-    platform: "weblith.dev",
-    appVariant: "weblith-runtime",
-    subdomain,
-    published: true,
-    html,
-    css,
-    customCode,
-  };
 
   return `<!doctype html>
 <html lang="en">
@@ -59,10 +42,9 @@ export function renderSiteHtml({
     <script>
       window.WEBLITH_FRONTEND_FAKE_BACKEND_MODE = false;
       window.WEBLITH_APP_VARIANT = "runtime";
-      window.WEBLITH_BUILD_VERSION = "1.0.1";
+      window.WEBLITH_BUILD_VERSION = "1.0.2";
+      window.WEBLITH_SUBDOMAIN = "${escapeHtml(subdomain)}";
       window.weblithHtmlLoadedAt = performance.now();
-
-      window.WEBLITH_SITE_PAYLOAD = ${escapeScriptJson(sitePayload)};
 
       window.WEBLITH_PAGE_SUSPEND_DETECTED = document.visibilityState === "hidden";
 
@@ -79,13 +61,15 @@ export function renderSiteHtml({
     </script>
 
     ${headCode || ""}
+
+    <script defer src="/weblith-runtime.js"></script>
   </head>
 
   <body>
     ${bodyStartCode || ""}
 
     <script>
-      var entrypointChunk = "weblith-inline-runtime";
+      var entrypointChunk = "/weblith-runtime.js";
     </script>
 
     <div id="root" style="height: 100%"></div>
@@ -96,72 +80,6 @@ export function renderSiteHtml({
     >
       This is invisible text to detect translation tools.
     </div>
-
-    <script>
-      function weblithRunCustomScripts(container) {
-        var scripts = container.querySelectorAll("script");
-
-        scripts.forEach(function (oldScript) {
-          var newScript = document.createElement("script");
-
-          Array.from(oldScript.attributes).forEach(function (attr) {
-            newScript.setAttribute(attr.name, attr.value);
-          });
-
-          newScript.text = oldScript.textContent;
-          oldScript.parentNode.replaceChild(newScript, oldScript);
-        });
-      }
-
-      function weblithRenderSite() {
-        var payload = window.WEBLITH_SITE_PAYLOAD || {};
-        var root = document.getElementById("root");
-
-        if (!root) return;
-
-        var style = document.createElement("style");
-        style.id = "weblith-site-css";
-        style.innerHTML = payload.css || "";
-        document.head.appendChild(style);
-
-        root.innerHTML = payload.html || "";
-
-        if (payload.customCode) {
-          var customWrapper = document.createElement("div");
-          customWrapper.id = "weblith-custom-code";
-          customWrapper.innerHTML = payload.customCode;
-          document.body.appendChild(customWrapper);
-          weblithRunCustomScripts(customWrapper);
-        }
-
-        weblithRunCustomScripts(root);
-
-        window.weblithRuntimeLoadedAt = performance.now();
-      }
-
-      function errorHandler() {
-        var retryCount;
-        var storedRetryCount = localStorage.getItem("weblith-entrypoint-retry-count");
-
-        if (storedRetryCount !== null) {
-          retryCount = parseInt(storedRetryCount);
-        } else {
-          retryCount = 0;
-        }
-
-        if (retryCount < 5) {
-          localStorage.setItem("weblith-entrypoint-retry-count", retryCount + 1);
-          window.location.reload();
-        }
-      }
-
-      try {
-        weblithRenderSite();
-      } catch (error) {
-        console.error("Weblith runtime failed:", error);
-        errorHandler();
-      }
-    </script>
 
     ${bodyEndCode || ""}
   </body>
