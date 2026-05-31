@@ -40,17 +40,17 @@ export function renderSiteHtml({
     <link id="pwa-manifest-placeholder" rel="manifest" href="" />
 
     <script>
-      window.WEBLITH_FRONTEND_FAKE_BACKEND_MODE = false;
-      window.WEBLITH_APP_VARIANT = "runtime";
-      window.WEBLITH_BUILD_VERSION = "1.0.2";
-      window.WEBLITH_SUBDOMAIN = "${escapeHtml(subdomain)}";
+      window.CENTERSMITHS_FRONTEND_FAKE_BACKEND_MODE = false;
+      window.CENTERSMITHS_APP_VARIANT = "runtime";
+      window.CENTERSMITHS_BUILD_VERSION = "1.0.2";
+      window.CENTERSMITHS_SUBDOMAIN = "${escapeHtml(subdomain)}";
       window.centersmithsHtmlLoadedAt = performance.now();
 
-      window.WEBLITH_PAGE_SUSPEND_DETECTED = document.visibilityState === "hidden";
+      window.CENTERSMITHS_PAGE_SUSPEND_DETECTED = document.visibilityState === "hidden";
 
       function _centersmithsDetectVisibilityChange() {
         if (document.visibilityState === "hidden") {
-          window.WEBLITH_PAGE_SUSPEND_DETECTED = true;
+          window.CENTERSMITHS_PAGE_SUSPEND_DETECTED = true;
           document.removeEventListener("visibilitychange", _centersmithsDetectVisibilityChange);
         }
       }
