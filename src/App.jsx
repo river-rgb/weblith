@@ -3,7 +3,7 @@ import SiteBuilder from "./SiteBuilder";
 import { supabase } from "./supabaseClient";
 import "./App.css";
 
-const ROOT_DOMAIN = "weblith.dev";
+const ROOT_DOMAIN = "centersmiths.dev";
 
 function getSubdomain() {
   const host = window.location.hostname;

@@ -7,7 +7,7 @@ function escapeHtml(value = "") {
 }
 
 export function renderSiteHtml({
-  title = "Weblith Site",
+  title = "Centersmiths Site",
   description = "",
   faviconUrl = "",
   socialImageUrl = "",
@@ -17,7 +17,7 @@ export function renderSiteHtml({
   bodyEndCode = "",
   subdomain = "",
 }) {
-  const safeTitle = escapeHtml(title || "Weblith Site");
+  const safeTitle = escapeHtml(title || "Centersmiths Site");
   const safeDescription = escapeHtml(description || "");
   const safeThemeColor = escapeHtml(themeColor || "#ffffff");
 
@@ -44,32 +44,32 @@ export function renderSiteHtml({
       window.WEBLITH_APP_VARIANT = "runtime";
       window.WEBLITH_BUILD_VERSION = "1.0.2";
       window.WEBLITH_SUBDOMAIN = "${escapeHtml(subdomain)}";
-      window.weblithHtmlLoadedAt = performance.now();
+      window.centersmithsHtmlLoadedAt = performance.now();
 
       window.WEBLITH_PAGE_SUSPEND_DETECTED = document.visibilityState === "hidden";
 
-      function _weblithDetectVisibilityChange() {
+      function _centersmithsDetectVisibilityChange() {
         if (document.visibilityState === "hidden") {
           window.WEBLITH_PAGE_SUSPEND_DETECTED = true;
-          document.removeEventListener("visibilitychange", _weblithDetectVisibilityChange);
+          document.removeEventListener("visibilitychange", _centersmithsDetectVisibilityChange);
         }
       }
 
       if (document.visibilityState === "visible") {
-        document.addEventListener("visibilitychange", _weblithDetectVisibilityChange);
+        document.addEventListener("visibilitychange", _centersmithsDetectVisibilityChange);
       }
     </script>
 
     ${headCode || ""}
 
-    <script defer src="/weblith-runtime.js"></script>
+    <script defer src="/centersmiths-runtime.js"></script>
   </head>
 
   <body>
     ${bodyStartCode || ""}
 
     <script>
-      var entrypointChunk = "/weblith-runtime.js";
+      var entrypointChunk = "/centersmiths-runtime.js";
     </script>
 
     <div id="root" style="height: 100%"></div>

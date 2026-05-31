@@ -1,4 +1,4 @@
-function weblithRunCustomScripts(container) {
+function centersmithsRunCustomScripts(container) {
   const scripts = container.querySelectorAll("script");
 
   scripts.forEach((oldScript) => {
@@ -17,7 +17,7 @@ function weblithRunCustomScripts(container) {
   });
 }
 
-async function weblithRenderSite() {
+async function centersmithsRenderSite() {
   const root = document.getElementById("root");
 
   if (!root) return;
@@ -34,7 +34,7 @@ async function weblithRenderSite() {
     const payload = await response.json();
 
     const style = document.createElement("style");
-    style.id = "weblith-site-css";
+    style.id = "centersmiths-site-css";
     style.innerHTML = payload.css || "";
 
     document.head.appendChild(style);
@@ -45,7 +45,7 @@ async function weblithRenderSite() {
       const customWrapper =
         document.createElement("div");
 
-      customWrapper.id = "weblith-custom-code";
+      customWrapper.id = "centersmiths-custom-code";
 
       customWrapper.innerHTML =
         payload.customCode;
@@ -54,14 +54,14 @@ async function weblithRenderSite() {
         customWrapper
       );
 
-      weblithRunCustomScripts(
+      centersmithsRunCustomScripts(
         customWrapper
       );
     }
 
-    weblithRunCustomScripts(root);
+    centersmithsRunCustomScripts(root);
 
-    window.weblithRuntimeLoadedAt =
+    window.centersmithsRuntimeLoadedAt =
       performance.now();
   } catch (error) {
     console.error(
@@ -71,4 +71,4 @@ async function weblithRenderSite() {
   }
 }
 
-weblithRenderSite();
+centersmithsRenderSite();
