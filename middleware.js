@@ -4,10 +4,14 @@ export default function middleware(request) {
 
   const isRootDomain =
     host === "weblith.dev" ||
-    host === "www.weblith.dev";
+    host === "www.weblith.dev" ||
+    host === "centersmiths.com" ||
+    host === "www.centersmiths.com";
 
-  const isWeblithSubdomain =
-    host.endsWith(".weblith.dev") && !isRootDomain;
+  const isPublicSubdomain =
+    (host.endsWith(".weblith.dev") ||
+      host.endsWith(".centersmiths.com")) &&
+    !isRootDomain;
 
   const isAsset =
     url.pathname.startsWith("/assets/") ||
@@ -16,7 +20,7 @@ export default function middleware(request) {
     url.pathname === "/favicon.svg" ||
     url.pathname === "/favicon.ico";
 
-  if (isWeblithSubdomain && !isAsset) {
+  if (isPublicSubdomain && !isAsset) {
     url.pathname = "/api/render-site";
     return fetch(url, request);
   }

@@ -10,12 +10,12 @@ export default async function handler(req, res) {
     const host = req.headers.host || "";
 
     const subdomain = host
-      .replace(".weblith.dev", "")
+      .replace(".centersmiths.com", "")
       .replace("www.", "")
       .split(":")[0]
       .trim();
 
-    if (!subdomain || subdomain === "weblith" || subdomain === "www") {
+    if (!subdomain || subdomain === "centersmiths" || subdomain === "www") {
       return res.status(404).json({
         error: "Not a public site",
       });

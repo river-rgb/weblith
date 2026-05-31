@@ -16,7 +16,7 @@ export default function SiteBuilder({ website, onBack }) {
 
   const [publishedUrl, setPublishedUrl] = useState(
     website?.subdomain
-      ? `https://${website.subdomain}.weblith.dev`
+      ? `https://${website.subdomain}.centersmiths.com`
       : ""
   );
 
@@ -286,7 +286,7 @@ editor.on("load", () => {
 
     if (cleanSubdomain) {
       setPublishedUrl(
-        `https://${cleanSubdomain}.weblith.dev`
+        `https://${cleanSubdomain}.centersmiths.com`
       );
     }
 
@@ -341,7 +341,7 @@ editor.on("load", () => {
       return;
     }
 
-    const finalUrl = `https://${cleanSubdomain}.weblith.dev`;
+    const finalUrl = `https://${cleanSubdomain}.centersmiths.com`;
 
     setSubdomain(cleanSubdomain);
     setPublished(true);
@@ -425,7 +425,7 @@ editor.on("load", () => {
         />
 
         <span className="domain-preview">
-          .weblith.dev
+          .centersmiths.com
         </span>
 
         <span className="active-site-name">
