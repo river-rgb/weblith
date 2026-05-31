@@ -35,22 +35,15 @@ export default async function handler(req, res) {
     }
 
     if (!site.rendered_html) {
-      return res
-        .status(500)
-        .send("Site has no rendered HTML");
+      return res.status(500).send("Site has no rendered HTML");
     }
 
     res.setHeader("Content-Type", "text/html");
-
-    res.setHeader(
-      "Cache-Control",
-      "no-store"
-    );
+    res.setHeader("Cache-Control", "no-store");
 
     return res.status(200).send(site.rendered_html);
   } catch (error) {
     console.error(error);
-
     return res.status(500).send("Server error");
   }
 }

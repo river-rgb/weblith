@@ -3,15 +3,11 @@ export default function middleware(request) {
   const host = request.headers.get("host") || "";
 
   const isRootDomain =
-    host === "weblith.dev" ||
-    host === "www.weblith.dev" ||
     host === "centersmiths.com" ||
     host === "www.centersmiths.com";
 
   const isPublicSubdomain =
-    (host.endsWith(".weblith.dev") ||
-      host.endsWith(".centersmiths.com")) &&
-    !isRootDomain;
+    host.endsWith(".centersmiths.com") && !isRootDomain;
 
   const isAsset =
     url.pathname.startsWith("/assets/") ||

@@ -15,7 +15,11 @@ export default async function handler(req, res) {
       .split(":")[0]
       .trim();
 
-    if (!subdomain || subdomain === "centersmiths" || subdomain === "www") {
+    if (
+      !subdomain ||
+      subdomain === "centersmiths" ||
+      subdomain === "www"
+    ) {
       return res.status(404).json({
         error: "Not a public site",
       });
@@ -33,6 +37,8 @@ export default async function handler(req, res) {
         error: "Site not found",
       });
     }
+
+    res.setHeader("Cache-Control", "no-store");
 
     return res.status(200).json({
       subdomain: site.subdomain,
