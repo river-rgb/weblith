@@ -12,7 +12,7 @@ export default function middleware(request) {
   const isAsset =
     url.pathname.startsWith("/assets/") ||
     url.pathname.startsWith("/api/") ||
-    url.pathname === "/weblith-runtime.js" ||
+    url.pathname === "/centersmiths-runtime.js" ||
     url.pathname === "/favicon.svg" ||
     url.pathname === "/favicon.ico";
 
